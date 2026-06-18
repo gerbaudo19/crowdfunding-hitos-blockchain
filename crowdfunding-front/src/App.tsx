@@ -9,10 +9,13 @@ import PanelDonante from './components/PanelDonante'
 import PanelAuditor from './components/PanelAuditor'
 import PanelCreador from './components/PanelCreador'
 
+const LS_VERIFIER = 'crowdfunding_verifier_addr'
+const LS_CROWDFUNDING = 'crowdfunding_crowdfunding_addr'
+
 function App() {
   const { account, provider, signer, chainId, conectar, error } = useWallet()
-  const [verifierAddress, setVerifierAddress] = useState<string | null>(null)
-  const [crowdfundingAddress, setCrowdfundingAddress] = useState<string | null>(null)
+  const [verifierAddress, setVerifierAddress] = useState<string | null>(() => localStorage.getItem(LS_VERIFIER))
+  const [crowdfundingAddress, setCrowdfundingAddress] = useState<string | null>(() => localStorage.getItem(LS_CROWDFUNDING))
   const [rol, setRol] = useState<'Creador' | 'Auditor' | 'Donante' | null>(null)
   const [refreshKey, setRefreshKey] = useState(0)
 
@@ -58,9 +61,19 @@ function App() {
   }, [crowdfundingContrato, refresh])
 
   function handleDeploy(verifierAddr: string, crowdfundingAddr: string) {
+    localStorage.setItem(LS_VERIFIER, verifierAddr)
+    localStorage.setItem(LS_CROWDFUNDING, crowdfundingAddr)
     setVerifierAddress(verifierAddr)
     setCrowdfundingAddress(crowdfundingAddr)
     refresh()
+  }
+
+  function handleReset() {
+    localStorage.removeItem(LS_VERIFIER)
+    localStorage.removeItem(LS_CROWDFUNDING)
+    setVerifierAddress(null)
+    setCrowdfundingAddress(null)
+    setRol(null)
   }
 
   return (
@@ -82,6 +95,17 @@ function App() {
         {account && chainId && chainId !== 11155111 && (
           <div className="bg-red-400/10 border border-red-400/30 rounded-xl p-4 text-red-400 text-sm">
             Conectate a la red Sepolia (Chain ID: 11155111). Red actual: {chainId}
+          </div>
+        )}
+
+        {crowdfundingAddress && (
+          <div className="flex justify-end">
+            <button
+              onClick={handleReset}
+              className="text-sm text-gray-400 hover:text-white border border-gray-700 rounded-lg px-3 py-1.5 transition-colors"
+            >
+              Nuevo deploy
+            </button>
           </div>
         )}
 
