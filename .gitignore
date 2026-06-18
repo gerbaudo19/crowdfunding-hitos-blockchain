@@ -6,3 +6,7 @@ build
 .DS_Store
 .vscode
 .idea
+package.json
+package-lock.json
+*_sol_*.abi
+*_sol_*.bin
