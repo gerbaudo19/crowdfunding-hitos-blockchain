@@ -102,7 +102,7 @@ contract CrowdfundingHitos {
         // Verificar que el owner del verificador no sea el mismo que el creador
         address verificadorOwner = IHitosVerifier(_verificador).owner();
         require(verificadorOwner != address(0), "Owner verificador invalido");
-        // require(verificadorOwner != msg.sender, "Owner verificador no puede ser creador");
+        require(verificadorOwner != msg.sender, "Owner verificador no puede ser creador");
 
         verificador      = IHitosVerifier(_verificador);
         nombreProyecto   = _nombre;
